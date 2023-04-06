@@ -1,5 +1,5 @@
 import requests
 
-resp = requests.post('http://localhost:5000/predict', files={'file': open("0_left.jpg", 'rb')})
+resp = requests.post('https://eyediseaseclassification.onrender.com//predict', files={'file': open("0_left.jpg", 'rb')})
 
-print(resp.text)
+print(resp)

@@ -8,6 +8,10 @@ ALLOWED_EXTENSTIONS = {'png', 'jpeg', 'jpg'}
 def allowed_file(filename):
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSTIONS
 
+@app.route('/')
+def hello_world():
+    return 'You have successfully deployed!'
+
 @app.route('/predict', methods=['POST'])
 def predict():
     if(request.method == 'POST'):
