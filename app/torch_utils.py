@@ -45,7 +45,7 @@ class CNN(nn.Module):
         return x # x is the final tensor from all the convolutions
 
 model = CNN(num_classes) # initializing the model
-PATH = "model.pth"
+PATH = "app/model.pth"
 model.load_state_dict(torch.load(PATH))
 model.eval()
 
