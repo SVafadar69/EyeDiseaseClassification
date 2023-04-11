@@ -1,16 +1,19 @@
 from flask import Flask, request, jsonify
-
+from flask_cors import CORS, cross_origin
+from flask.helpers import send_from_directory
 from app.torch_utils import transform_image, get_prediction
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../frontend/build', static_url_path='')
+CORS(app)
 
 ALLOWED_EXTENSTIONS = {'png', 'jpeg', 'jpg'}
 def allowed_file(filename):
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSTIONS
 
 @app.route('/')
-def hello_world():
-    return 'You have successfully deployed!'
+@cross_origin()
+def serve():
+    return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -30,6 +33,6 @@ def predict():
 
         except:
             return jsonify({'error': 'error during prediction'})
-  
-    return jsonify({'result': 1})
+
+    return "unexpected"
 
