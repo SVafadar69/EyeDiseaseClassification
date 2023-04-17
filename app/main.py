@@ -35,4 +35,3 @@ def predict():
             return jsonify({'error': 'error during prediction'})
 
     return "unexpected"
-

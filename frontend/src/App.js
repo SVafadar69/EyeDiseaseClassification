@@ -1,11 +1,13 @@
 import logo from "./2655_left.jpg";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
+import { AiFillGithub } from "react-icons/ai";
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [predicted, setPredicted] = useState(null);
+  const [isTimeOut, setIsTimeout] = useState(false);
   const [fileImage, setFileImage] = useState(
     "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
   );
@@ -27,9 +29,24 @@ function App() {
     };
     axios.post("/predict", formData, config).then((response) => {
       setIsLoading(false);
+      setTimeout(false);
       setPredicted(response.data.prediction);
     });
   };
+
+  useEffect(() => {
+    setTimeout(false);
+    if (isLoading) {
+      console.log("Started Timer");
+      const timer = setTimeout(() => {
+        setIsTimeout(true);
+      }, 120000);
+      return () => {
+        console.log("clearing timer")
+        clearTimeout(timer);
+      }
+    }
+  }, [isLoading]);
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center">
@@ -43,8 +60,12 @@ function App() {
                 alt="Eye Disease Classification"
               />
               <h1 className="text-3xl text-center font-bold">
-                Eye Disease Classification Machine Learning
+                Eye Disease Classification ML
               </h1>
+              <a href="https://github.com/SVafadar69/EyeDiseaseClassification">
+                <AiFillGithub className="inline mr-2" />
+                SVafadar69/EyeDiseaseClassification
+              </a>
               <div className=" text-left">
                 <h2 className="text-xl font-bold py-3 ">
                   <a href="https://github.com/Rpyaanng">
@@ -80,7 +101,7 @@ function App() {
                     if left untreated.
                   </li>
                   <li>
-                    <b>Cataract:</b> A clouding of the lens of the eye, which
+                    <b>Cataracts:</b> A clouding of the lens of the eye, which
                     normally helps focus light on the retina. It can cause
                     blurry or dim vision, and may require surgery to remove the
                     affected lens and replace it with an artificial one.
@@ -100,7 +121,9 @@ function App() {
             <div className="hero-content flex-col">
               <h1 className="text-3xl text-center font-bold">
                 {isLoading
-                  ? "This might take a minute..."
+                  ? isTimeOut
+                    ? "The server seems like it's not responding. Please try refreshing."
+                    : "This might take a minute..."
                   : "Upload an image of an eye:"}
               </h1>
               <img
@@ -111,23 +134,37 @@ function App() {
               <div className="w-full p-4 items-center justify-center flex">
                 <div className="form-control">
                   {isLoading ? (
-                    <div class="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-600 to-pink-600 animate-spin">
-                      <div class="h-7 w-7 rounded-full bg-base-100"></div>
+                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-600 to-pink-600 animate-spin">
+                      <div className="h-9 w-9 rounded-full bg-base-100"></div>
                     </div>
                   ) : (
-                    <input
-                      type="file"
-                      className="file-input file-input-bordered file-input-primary w-full max-w-xs"
-                      onChange={handleChange}
-                      disabled={isLoading}
-                    />
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/png, image/jpeg"
+                        className="file-input file-input-bordered file-input-primary w-full max-w-xs"
+                        onChange={handleChange}
+                        disabled={isLoading}
+                      />
+                      <p
+                        className="mt-1 text-sm text-gray-500 dark:text-gray-300"
+                        id="file_input_help"
+                      >
+                        PNG, JPG or JPEG.
+                      </p>
+                    </div>
                   )}
                 </div>
               </div>
-              {predicted !== null && (
-                <h1 className="text-2xl text-center font-bold pt-4">
-                  Predicted: {labels[predicted]}
-                </h1>
+              {predicted != null && (
+                <>
+                  <h1 className="text-2xl text-center font-bold pt-2">
+                    Predicted:
+                  </h1>
+                  <h2 className="text-xl text-center font-bold">
+                    {labels[predicted]}
+                  </h2>
+                </>
               )}
             </div>
           </div>
